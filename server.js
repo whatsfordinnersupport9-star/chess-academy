@@ -9,12 +9,14 @@ const save=()=>{fs.writeFileSync(F+'.tmp',JSON.stringify(DB));fs.renameSync(F+'.
 const app=express();app.use(express.json({limit:'20kb'}));app.use(express.urlencoded({extended:false}));
 const okPid=p=>typeof p==='string'&&p.length>=10&&p.length<=64,clean=n=>String(n||'Игрок').replace(/[<>&"']/g,'').slice(0,16)||'Игрок';
 app.get('/api/ping',(q,r)=>r.json({ok:1}));
+app.use(express.static(__dirname));
+app.get('/', (q, r) => r.sendFile(path.join(__dirname, 'index.html')));
 // ---------- оплата WebMoney ----------
 app.post('/api/order',(q,r)=>{const{pid,item}=q.body,amount=PRICE(item);if(!amount||!okPid(pid))return r.status(400).json({});
  let no;do{no=crypto.randomInt(1,2e9)}while(DB.orders[no]);
  DB.orders[no]={pid,item,amount,status:'pending',t:Date.now()};save();
  r.json({no,purse:PURSE,amount,desc:'Chess Academy: '+(item=='all'?'full access':'lesson '+item)})});
-// Result URL в WebMoney: https://ВАШ-САЙТ/api/wm/result (POST)
+// Result URL в WebMoney: https://chessacademy.fun/api/wm/result (POST)
 app.post('/api/wm/result',(q,r)=>{const b=q.body,o=DB.orders[b.LMI_PAYMENT_NO];
  if(b.LMI_PREREQUEST=='1')return r.send(o&&o.status=='pending'&&b.LMI_PAYEE_PURSE==PURSE&&b.LMI_PAYMENT_AMOUNT==o.amount?'YES':'NO');
  const s=[b.LMI_PAYEE_PURSE,b.LMI_PAYMENT_AMOUNT,b.LMI_PAYMENT_NO,b.LMI_MODE,b.LMI_SYS_INVS_NO,b.LMI_SYS_TRANS_NO,b.LMI_SYS_TRANS_DATE,SECRET,b.LMI_PAYER_PURSE,b.LMI_PAYER_WM].join('');
