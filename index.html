@@ -2,8 +2,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <style>
 :root{--bg:#f4f1ea;--pn:#fff;--tx:#1d1a16;--mu:#6b645a;--ac:#8a5a14;--bd:#ddd5c6;--l:#f0d9b5;--d:#b58863;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#15130f;--pn:#201d17;--tx:#f0ebe0;--mu:#a59d8e;--ac:#e0b050;--bd:#38322a}}
-:root[data-theme=dark]{--bg:#15130f;--pn:#201d17;--tx:#f0ebe0;--mu:#a59d8e;--ac:#e0b050;--bd:#38322a}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f0e0c;--pn:#1b1916;--tx:#efe9dd;--mu:#a39b8c;--ac:#d9a441;--bd:#322e27}}
+:root[data-theme=dark]{--bg:#0f0e0c;--pn:#1b1916;--tx:#efe9dd;--mu:#a39b8c;--ac:#d9a441;--bd:#322e27}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,sans-serif}
 .w{max-width:980px;margin:auto;padding:0 16px 40px}h1,h2,h3{font-family:Georgia,serif;line-height:1.2}
 button{background:var(--pn);color:var(--tx);border:1px solid var(--bd);border-radius:10px;padding:10px 16px;font:inherit;cursor:pointer;transition:transform .15s,background .2s}
@@ -29,16 +29,24 @@ footer{text-align:center;color:var(--mu);font-size:12px;padding:20px}
 .sp{position:relative;width:64px;height:64px;background:var(--l);border-radius:8px}.pl{font-weight:600;padding:6px 2px}.pc img{width:100%;height:100%;object-fit:contain;display:block}
 input[type=text]{background:var(--pn);color:var(--tx);border:1px solid var(--bd);border-radius:10px;padding:10px;font:inherit}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ac);color:#fff;padding:10px 18px;border-radius:20px;opacity:0;transition:.3s;pointer-events:none;z-index:50;max-width:90vw;text-align:center}.toast.on{opacity:1;transform:translate(-50%,0)}
-</style></head><body>
+html{scroll-behavior:smooth;color-scheme:light dark}body{background:radial-gradient(900px 420px at 50% -80px,color-mix(in srgb,var(--ac) 14%,transparent),transparent),var(--bg);min-height:100vh}
+body,.card,button,select,input,details,.hb{transition:background-color .25s,border-color .25s,color .25s}button{transition:transform .15s,background-color .25s,border-color .25s,color .25s}
+button:hover{border-color:var(--ac)}button.pri:hover{filter:brightness(1.08)}button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.hb{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--bd)}.hb header{border:0}
+.card{border-radius:16px;box-shadow:0 1px 0 #ffffff08 inset,0 8px 24px #0000001f}h1,h2,h3{letter-spacing:-.01em}h2{font-size:26px;margin:28px 0 12px}
+.hero{padding:64px 0 36px}.hero h1{font-size:clamp(34px,7vw,56px)}.eb{display:inline-block;font:600 12px system-ui;letter-spacing:.18em;text-transform:uppercase;color:var(--ac);border:1px solid var(--bd);border-radius:20px;padding:4px 14px;margin-bottom:16px}
+.steps .card b{color:var(--ac);font:700 28px Georgia,serif;display:block}footer a{color:var(--mu);text-decoration:underline}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style><script>try{var t=(JSON.parse(localStorage.getItem('pk_pr')||'{}').ui)||'dark';if(t!='auto')document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme='dark'}</script></head><body>
 <div id="land"><div class="w">
-<div class="hero"><h1>♞ Chess Academy</h1><p>Онлайн-школа шахматных дебютов и матовых схем. Пошаговые уроки на интерактивной доске, объяснение идей каждого хода и тренировка в игре против компьютера.</p><button class="pri" onclick="start()">Начать</button></div>
+<div class="hero"><div class="eb">Шахматная школа онлайн</div><h1>♞ Chess Academy</h1><p>Онлайн-школа шахматных дебютов и матовых схем. Пошаговые уроки на интерактивной доске, объяснение идей каждого хода и тренировка в игре против компьютера.</p><button class="pri" onclick="start()">Начать</button></div>
 <h2>О проекте</h2><div class="grid">
 <div class="card"><b>♙ Дебюты</b><p class="mu">Каталог главных дебютов: идеи сторон, ключевые ходы и типичные планы.</p></div>
 <div class="card"><b>♚ Матовые схемы</b><p class="mu">Выигрышные матовые комбинации и приёмы: от детского мата до мата на задохнувшемся короле.</p></div>
 <div class="card"><b>♟ Игра с ботом</b><p class="mu">Партия против компьютера: лёгкий, средний и тяжёлый уровень. Бесплатно.</p></div><div class="card"><b>👥 Игра с другом</b><p class="mu">Создайте партию и отправьте другу ссылку-приглашение.</p></div><div class="card"><b>🏆 Рейтинг и профиль</b><p class="mu">Собственный рейтинг на каждом уровне бота, свои фигуры и оформление доски.</p></div></div>
-<h2>Как это работает</h2><div class="card"><p>Часть уроков доступна бесплатно. Платные уроки открываются отдельно ($0.99) или все сразу по тарифу «Полный доступ» ($2.59). Оплата в долларах США (WMZ) через WebMoney Transfer. Доступ открывается автоматически после подтверждения платежа.</p><p class="mu">Каталог постоянно пополняется. Он содержит основные дебюты и матовые схемы, а не вообще все варианты, которых в шахматах тысячи.</p></div>
+<h2>Как это работает</h2><div class="grid steps"><div class="card"><b>1</b>Изучайте бесплатные уроки и пробуйте игру с ботом.</div><div class="card"><b>2</b>Откройте платные уроки по отдельности ($0.99) или все сразу ($2.59).</div><div class="card"><b>3</b>Тренируйтесь, растите в рейтинге и играйте с друзьями по ссылке.</div></div><div class="card"><p>Часть уроков доступна бесплатно. Платные уроки открываются отдельно ($0.99) или все сразу по тарифу «Полный доступ» ($2.59). Оплата в долларах США (WMZ) через WebMoney Transfer. Доступ открывается автоматически после подтверждения платежа.</p><p class="mu">Каталог постоянно пополняется. Он содержит основные дебюты и матовые схемы, а не вообще все варианты, которых в шахматах тысячи.</p></div>
 </div></div>
-<div id="app" hidden><header><b>♞ Chess Academy</b><button data-v="o" onclick="show('o')">Дебюты</button><button data-v="m" onclick="show('m')">Маты</button><button data-v="p" onclick="show('p')">Играть</button><button data-v="n" onclick="show('n')">С другом</button><button data-v="s" onclick="show('s')" id="hp"></button><button onclick="$('land').hidden=false;$('app').hidden=true">О сайте</button></header>
+<div id="app" hidden><div class="hb"><header><b>♞ Chess Academy</b><button data-v="o" onclick="show('o')">Дебюты</button><button data-v="m" onclick="show('m')">Маты</button><button data-v="p" onclick="show('p')">Играть</button><button data-v="n" onclick="show('n')">С другом</button><button data-v="s" onclick="show('s')" id="hp"></button><button id="tg" onclick="tgl()" title="Сменить тему">🌙</button><button onclick="$('land').hidden=false;$('app').hidden=true">О сайте</button></header></div>
 <div class="w">
 <section class="v" id="vo"><h2>Шахматные дебюты</h2><p class="mu pn"></p><div class="grid" id="lo"></div></section>
 <section class="v" id="vm" hidden><h2>Выигрышные матовые схемы</h2><p class="mu pn"></p><div class="grid" id="lm"></div></section>
@@ -48,13 +56,17 @@ input[type=text]{background:var(--pn);color:var(--tx);border:1px solid var(--bd)
 <div class="two"><div><div class="pl" id="gt"></div><div class="bd" id="gb"></div><div class="pl" id="gu"></div><p id="gs" style="font-weight:700"></p></div><div class="mvs" id="gm"></div></div></section>
 <section class="v" id="vn" hidden><h2>Игра с другом</h2><div id="nl"><div class="card"><p class="mu">Создайте партию и отправьте другу ссылку. Когда он откроет её, игра начнётся.</p><div class="ctl"><select id="oc"><option value="w">Я играю белыми</option><option value="b">Я играю чёрными</option><option value="r">Случайный цвет</option></select><button class="pri" onclick="mkRoom()">Создать партию</button></div></div></div>
 <div id="np" hidden><div class="card" id="ni"></div><div class="two"><div><div class="pl" id="nt"></div><div class="bd" id="nb"></div><div class="pl" id="nu"></div><p id="ns" style="font-weight:700"></p></div><div><div class="ctl"><button onclick="nres()">Сдаться</button><button onclick="nleave()">Выйти</button></div><div class="mvs" id="nm2"></div></div></div></div></section>
+<section class="v" id="vd" hidden><h2>Документы</h2>
+<details open><summary>Условия использования</summary><p class="mu">Сайт предназначен для обучения шахматам и развлечения. Рейтинг на сайте внутренний и не связан с FIDE или другими международными системами. Запрещены попытки взлома, вмешательства в работу сайта и передача купленного доступа третьим лицам.</p></details>
+<details><summary>Политика конфиденциальности</summary><p class="mu">В вашем браузере хранятся: идентификатор устройства, профиль, рейтинг, настройки и загруженные изображения фигур (изображения на сервер не передаются). На сервере хранятся идентификатор устройства, заказы и список купленных уроков. Ваше имя в онлайн-партии видно сопернику. Данные кошелька WebMoney сайт не получает.</p></details>
+<details><summary>Оплата и доступ</summary><p class="mu">Оплата принимается в долларах США через WebMoney Transfer (WMZ): $0.99 за урок, $2.59 за полный доступ. Доступ открывается автоматически после подтверждения платежа и привязан к браузеру, в котором сделана покупка. Если оплата прошла, а урок не открылся, обратитесь к владельцу сайта.</p></details></section>
 <section class="v" id="vs" hidden><h2>Профиль и настройки</h2>
 <div class="card"><b>Профиль</b><div class="ctl"><input id="pn2" type="text" maxlength="16" placeholder="Ваше имя" oninput="PR.name=this.value.trim()||'Игрок';savePR();hdr()"></div><div class="ctl" id="av"></div></div>
 <div class="card"><b>Рейтинг</b><div id="rl"></div><p class="mu">Рейтинг отдельный на каждом уровне бота. Победа +8, поражение −4, ничья 0. Минимум 100. Партии с отменой хода рейтинг не меняют.</p></div>
-<div class="card"><b>Оформление</b><div class="ctl" id="th"></div><label><input type="checkbox" id="an" onchange="PR.anim=this.checked;savePR()"> Плавная анимация ходов</label></div>
+<div class="card"><b>Оформление</b><p class="mu">Тема сайта</p><div class="ctl" id="ui"></div><p class="mu">Доска</p><div class="ctl" id="th"></div><label><input type="checkbox" id="an" onchange="PR.anim=this.checked;savePR()"> Плавная анимация ходов</label></div>
 <div class="card"><b>Свои фигуры</b><p class="mu">Нажмите на фигуру и выберите изображение (PNG или JPG), например фото из альбома. Оно заменит фигуру на доске. Файлы хранятся только в вашем браузере.</p><div class="grid" id="sl" style="grid-template-columns:repeat(auto-fill,minmax(110px,1fr))"></div><div class="ctl"><button onclick="resetImgs()">Вернуть стандартные фигуры</button></div></div></section>
 </div></div>
-<div id="tt" class="toast"></div><footer>© Chess Academy · Платные уроки: оплата через WebMoney Transfer (WMZ) · Цены в долларах США</footer>
+<div id="tt" class="toast"></div><footer><div><a href="#" onclick="docs();return false">Условия</a> · <a href="#" onclick="docs();return false">Конфиденциальность</a> · <a href="#" onclick="docs();return false">Оплата и доступ</a></div>© Chess Academy · Платные уроки: оплата через WebMoney Transfer (WMZ) · Цены в долларах США</footer>
 <script>
 const $=id=>document.getElementById(id);
 // Шахматный движок: общий для сайта и сервера
@@ -101,14 +113,17 @@ el.innerHTML=h;if(o.click)el.onclick=e=>{const q=e.target.closest('.sq');if(q)o.
 if(o.anim&&PR.anim){const m=o.anim,kk=i=>o.flip?63-i:i,a=kk(m.f),b=kk(m.t),p=el.querySelector(`.sq[data-i="${m.t}"] .pc`);if(p){p.style.transition='none';p.style.zIndex=5;p.style.transform=`translate(${((a%8)-(b%8))*100}%,${((a>>3)-(b>>3))*100}%)`;p.offsetWidth;p.style.transition='transform .3s cubic-bezier(.25,.8,.25,1)';p.style.transform='none'}}}
 const WIN=8,LOSS=4,MIN=100,AVS=['♞','♛','♚','♜','♝','♟','🦁','🦅'],TH={classic:['Классика','#f0d9b5','#b58863'],green:['Зелёная','#eeeed2','#769656'],blue:['Синяя','#dee3e6','#8ca2ad'],dark:['Тёмная','#9a9a9a','#4d4d4d']},LV=['','Лёгкий','Средний','Тяжёлый'],PN={k:'король',q:'ферзь',r:'ладья',b:'слон',n:'конь',p:'пешка'};
 const ld0=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}},sv0=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return 1}catch(e){return 0}};
-const PR=Object.assign({name:'Игрок',av:'♞',board:'classic',anim:true,r:{1:100,2:100,3:100},st:{1:[0,0,0],2:[0,0,0],3:[0,0,0]}},ld0('pk_pr',{})),IMG=ld0('pk_img',{});
+const PR=Object.assign({name:'Игрок',av:'♞',board:'classic',anim:true,ui:'dark',r:{1:100,2:100,3:100},st:{1:[0,0,0],2:[0,0,0],3:[0,0,0]}},ld0('pk_pr',{})),IMG=ld0('pk_img',{});
 const savePR=()=>sv0('pk_pr',PR),title=r=>r<120?'Новичок':r<160?'Любитель':r<220?'Опытный':r<300?'Мастер':'Гроссмейстер';
 function rate(lv,res){const o=PR.r[lv];PR.r[lv]=res=='w'?o+WIN:res=='l'?Math.max(MIN,o-LOSS):o;PR.st[lv][res=='w'?0:res=='l'?1:2]++;savePR();return PR.r[lv]-o}
+function applyUI(){const u=PR.ui||'dark',d=document.documentElement;if(u=='auto')delete d.dataset.theme;else d.dataset.theme=u;const t=$('tg');if(t)t.textContent=u=='light'?'☀️':u=='dark'?'🌙':'🌓'}
+function tgl(){PR.ui=(PR.ui||'dark')=='dark'?'light':'dark';savePR();applyUI();if(!$('vs').hidden)setup()}
+function docs(){start();show('d')}
 function theme(){const t=TH[PR.board]||TH.classic,st=document.documentElement.style;st.setProperty('--l',t[1]);st.setProperty('--d',t[2])}
 function hdr(){$('hp').textContent=PR.av+' '+PR.name}
 function toast(t){const e=$('tt');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),4500)}
 function setup(){$('pn2').value=PR.name;$('av').innerHTML=AVS.map(a=>`<button class="${a==PR.av?'on':''}" onclick="PR.av='${a}';savePR();setup()">${a}</button>`).join('');
-$('th').innerHTML=Object.entries(TH).map(([k,t])=>`<button class="${k==PR.board?'on':''}" onclick="PR.board='${k}';savePR();theme();setup();redraw()">${t[0]}</button>`).join('');$('an').checked=PR.anim;
+$('th').innerHTML=Object.entries(TH).map(([k,t])=>`<button class="${k==PR.board?'on':''}" onclick="PR.board='${k}';savePR();theme();setup();redraw()">${t[0]}</button>`).join('');$('an').checked=PR.anim;$('ui').innerHTML=[['dark','Тёмная'],['light','Светлая'],['auto','Авто']].map(([k,n])=>`<button class="${(PR.ui||'dark')==k?'on':''}" onclick="PR.ui='${k}';savePR();applyUI();setup()">${n}</button>`).join('');
 $('rl').innerHTML=[1,2,3].map(l=>`<div class="rr"><b>${LV[l]}</b><span>${PR.r[l]}</span><span class="mu">${title(PR.r[l])} · побед ${PR.st[l][0]}, поражений ${PR.st[l][1]}, ничьих ${PR.st[l][2]}</span></div>`).join('');
 $('sl').innerHTML=['w','b'].flatMap(c=>'kqrbnp'.split('').map(p=>`<label class="slot"><div class="sp">${pcs(c=='w'?p.toUpperCase():p)}</div><span class="mu">${c=='w'?'Белый':'Чёрный'} ${PN[p]}</span><input type="file" accept="image/*" hidden onchange="upl('${c+p}',this)">${IMG[c+p]?`<button onclick="event.preventDefault();delImg('${c+p}')">Убрать</button>`:''}</label>`)).join('');hdr()}
 function upl(k,inp){const f=inp.files[0];if(!f)return;if(f.size>8e6){alert('Файл слишком большой (до 8 МБ).');return}const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=160;const x=c.getContext('2d'),q=Math.min(160/im.width,160/im.height);x.drawImage(im,(160-im.width*q)/2,(160-im.height*q)/2,im.width*q,im.height*q);IMG[k]=c.toDataURL('image/png');if(!sv0('pk_img',IMG)){delete IMG[k];alert('Не удалось сохранить: в браузере не хватает места.')}setup();redraw()};im.onerror=()=>alert('Не удалось открыть изображение.');im.src=fr.result};fr.readAsDataURL(f);inp.value=''}
@@ -168,5 +183,5 @@ function cpl(){navigator.clipboard?navigator.clipboard.writeText(rlink()).then((
 function shl(){navigator.share({title:'Партия в шахматы',text:'Сыграем в шахматы?',url:rlink()}).catch(()=>{})}
 function nres(){if(ON&&ON.v&&ON.v.status=='play'&&confirm('Сдаться?'))J('/api/room/'+ON.id+'/resign',{pid:PID})}
 function nleave(q){if(ON&&ON.es)ON.es.close();ON=null;if(!q){$('nl').hidden=false;$('np').hidden=true;history.replaceState(null,'',location.pathname)}}
-theme();hdr();
+theme();hdr();applyUI();
 </script></body></html>

@@ -4,7 +4,7 @@ const express=require('express'),fs=require('fs'),crypto=require('crypto'),path=
 const PURSE=process.env.WM_PURSE||'Z326768612767',SECRET=process.env.WM_SECRET;
 if(!SECRET){console.error('Задайте WM_SECRET (Secret Key из настроек Merchant WebMoney)');process.exit(1)}
 const LESSONS=require('./lessons.json'),PRICE=id=>id=='all'?'2.59':LESSONS[id]?'0.99':null;
-const F=path.join(__dirname,'data.json');let DB={orders:{},access:{}};try{DB=JSON.parse(fs.readFileSync(F))}catch(e){}
+const F=path.join(process.env.DATA_DIR||__dirname,'data.json');let DB={orders:{},access:{}};try{DB=JSON.parse(fs.readFileSync(F))}catch(e){}
 const save=()=>{fs.writeFileSync(F+'.tmp',JSON.stringify(DB));fs.renameSync(F+'.tmp',F)};
 const app=express();app.use(express.json({limit:'20kb'}));app.use(express.urlencoded({extended:false}));
 const okPid=p=>typeof p==='string'&&p.length>=10&&p.length<=64,clean=n=>String(n||'Игрок').replace(/[<>&"']/g,'').slice(0,16)||'Игрок';
