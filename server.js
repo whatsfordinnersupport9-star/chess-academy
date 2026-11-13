@@ -1,29 +1,33 @@
-// Chess Academy: сервер. Оплата WebMoney, открытие уроков, онлайн-партии с другом.
-// Запуск: WM_SECRET=ваш_ключ node server.js   (WM_PURSE по умолчанию Z326768612767)
+// Chess Academy: сервер. Оплата через Crypto Bot (Crypto Pay API), открытие уроков, онлайн-партии с другом.
+// Запуск: CRYPTO_PAY_TOKEN=токен SITE_URL=https://ваш-домен node server.js
 const express=require('express'),fs=require('fs'),crypto=require('crypto'),path=require('path'),E=require('./engine.js');
-const PURSE=process.env.WM_PURSE||'Z326768612767',SECRET=process.env.WM_SECRET;
-if(!SECRET){console.error('Задайте WM_SECRET (Secret Key из настроек Merchant WebMoney)');process.exit(1)}
+const TOKEN=process.env.CRYPTO_PAY_TOKEN,SITE=(process.env.SITE_URL||'').replace(/\/$/,''),CP=process.env.CRYPTO_PAY_API||'https://pay.crypt.bot/api';
+if(!TOKEN){console.error('Задайте CRYPTO_PAY_TOKEN (токен приложения: @CryptoBot → Crypto Pay → Create App)');process.exit(1)}
 const LESSONS=require('./lessons.json'),PRICE=id=>id=='all'?'2.59':LESSONS[id]?'0.99':null;
 const F=path.join(process.env.DATA_DIR||__dirname,'data.json');let DB={orders:{},access:{}};try{DB=JSON.parse(fs.readFileSync(F))}catch(e){}
 const save=()=>{fs.writeFileSync(F+'.tmp',JSON.stringify(DB));fs.renameSync(F+'.tmp',F)};
 const app=express();app.use(express.json({limit:'20kb'}));app.use(express.urlencoded({extended:false}));
 const okPid=p=>typeof p==='string'&&p.length>=10&&p.length<=64,clean=n=>String(n||'Игрок').replace(/[<>&"']/g,'').slice(0,16)||'Игрок';
 app.get('/api/ping',(q,r)=>r.json({ok:1}));
-app.use(express.static(__dirname));
-app.get('/', (q, r) => r.sendFile(path.join(__dirname, 'index.html')));
-// ---------- оплата WebMoney ----------
-app.post('/api/order',(q,r)=>{const{pid,item}=q.body,amount=PRICE(item);if(!amount||!okPid(pid))return r.status(400).json({});
- let no;do{no=crypto.randomInt(1,2e9)}while(DB.orders[no]);
- DB.orders[no]={pid,item,amount,status:'pending',t:Date.now()};save();
- r.json({no,purse:PURSE,amount,desc:'Chess Academy: '+(item=='all'?'full access':'lesson '+item)})});
-// Result URL в WebMoney: https://chessacademy.fun/api/wm/result (POST)
-app.post('/api/wm/result',(q,r)=>{const b=q.body,o=DB.orders[b.LMI_PAYMENT_NO];
- if(b.LMI_PREREQUEST=='1')return r.send(o&&o.status=='pending'&&b.LMI_PAYEE_PURSE==PURSE&&b.LMI_PAYMENT_AMOUNT==o.amount?'YES':'NO');
- const s=[b.LMI_PAYEE_PURSE,b.LMI_PAYMENT_AMOUNT,b.LMI_PAYMENT_NO,b.LMI_MODE,b.LMI_SYS_INVS_NO,b.LMI_SYS_TRANS_NO,b.LMI_SYS_TRANS_DATE,SECRET,b.LMI_PAYER_PURSE,b.LMI_PAYER_WM].join('');
- const h=crypto.createHash('sha256').update(s).digest('hex').toUpperCase();
- if(!o||h!==String(b.LMI_HASH||'').toUpperCase()||b.LMI_PAYEE_PURSE!==PURSE||b.LMI_PAYMENT_AMOUNT!=o.amount||b.LMI_MODE!='0')return r.status(400).send('bad');
- if(o.status=='pending'){o.status='paid';(DB.access[o.pid]=DB.access[o.pid]||[]).push(o.item);save()}r.send('OK')});
-app.get('/api/access',(q,r)=>r.json(okPid(q.query.pid)?DB.access[q.query.pid]||[]:[]));
+// ---------- оплата через Crypto Bot ----------
+// Для каждого заказа создаётся отдельный счёт. Оплату подтверждает только сам Crypto Pay API (сервер спрашивает статус счёта).
+async function cp(method,params){const r=await fetch(CP+'/'+method,{method:'POST',headers:{'Content-Type':'application/json','Crypto-Pay-API-Token':TOKEN},body:JSON.stringify(params)});
+ const j=await r.json();if(!j.ok)throw new Error(JSON.stringify(j.error||j));return j.result}
+app.post('/api/order',async(q,r)=>{const{pid,item}=q.body,amount=PRICE(item);if(!amount||!okPid(pid))return r.status(400).json({});
+ if(Object.values(DB.orders).filter(o=>o.pid===pid&&o.status=='pending'&&Date.now()-o.t<36e5).length>=10)return r.status(429).json({});
+ const no=crypto.randomUUID();
+ try{const p={currency_type:'fiat',fiat:'USD',amount,description:'Chess Academy: '+(item=='all'?'полный доступ':'урок '+item),payload:no,expires_in:3600,allow_comments:false,allow_anonymous:false};
+  if(process.env.CRYPTO_ASSETS)p.accepted_assets=process.env.CRYPTO_ASSETS;if(SITE.startsWith('https://')){p.paid_btn_name='callback';p.paid_btn_url=SITE+'/?paid=1'}
+  const inv=await cp('createInvoice',p);DB.orders[no]={pid,item,amount,status:'pending',inv:String(inv.invoice_id),t:Date.now()};save();
+  r.json({no,url:inv.bot_invoice_url||inv.pay_url})}catch(e){console.error('createInvoice',e.message);r.status(502).json({})}});
+const LAST={};
+async function sync(pid){const pend=Object.entries(DB.orders).filter(([n,o])=>o.pid===pid&&o.status=='pending'&&Date.now()-o.t<864e5);if(!pend.length)return;
+ if(LAST[pid]&&Date.now()-LAST[pid]<2500)return;LAST[pid]=Date.now();
+ const res=await cp('getInvoices',{invoice_ids:pend.map(([n,o])=>o.inv).join(',')}),items=Array.isArray(res)?res:(res&&res.items)||[];let ch=0;
+ for(const inv of items){const e=pend.find(([n,o])=>o.inv===String(inv.invoice_id));if(!e)continue;const[n,o]=e;
+  if(inv.status=='paid'&&inv.payload===n&&Number(inv.amount)==Number(o.amount)&&(!inv.fiat||inv.fiat=='USD')&&o.status=='pending'){o.status='paid';(DB.access[o.pid]=DB.access[o.pid]||[]).push(o.item);ch=1}}
+ if(ch)save()}
+app.get('/api/access',async(q,r)=>{const pid=q.query.pid;if(!okPid(pid))return r.json([]);try{await sync(pid)}catch(e){console.error('getInvoices',e.message)}r.json(DB.access[pid]||[])});
 app.get('/api/lesson',(q,r)=>{const a=DB.access[q.query.pid]||[],l=LESSONS[q.query.id];if(!l||!(a.includes('all')||a.includes(q.query.id)))return r.status(403).json({});r.json(l)});
 // ---------- онлайн-партии (ходы проверяет сервер) ----------
 const R=new Map(),view=r=>({id:r.id,status:r.status,s:r.s,moves:r.moves,last:r.last,names:{w:r.p.w&&r.p.w.name,b:r.p.b&&r.p.b.name},result:r.result});
