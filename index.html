@@ -1,0 +1,172 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><title>Chess Academy — шахматные уроки и игра</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>
+:root{--bg:#f4f1ea;--pn:#fff;--tx:#1d1a16;--mu:#6b645a;--ac:#8a5a14;--bd:#ddd5c6;--l:#f0d9b5;--d:#b58863;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#15130f;--pn:#201d17;--tx:#f0ebe0;--mu:#a59d8e;--ac:#e0b050;--bd:#38322a}}
+:root[data-theme=dark]{--bg:#15130f;--pn:#201d17;--tx:#f0ebe0;--mu:#a59d8e;--ac:#e0b050;--bd:#38322a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,sans-serif}
+.w{max-width:980px;margin:auto;padding:0 16px 40px}h1,h2,h3{font-family:Georgia,serif;line-height:1.2}
+button{background:var(--pn);color:var(--tx);border:1px solid var(--bd);border-radius:10px;padding:10px 16px;font:inherit;cursor:pointer;transition:transform .15s,background .2s}
+button:active{transform:scale(.97)}button.pri{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:700}button.on{border-color:var(--ac);color:var(--ac);font-weight:700}
+.hero{text-align:center;padding:56px 0 28px}.hero h1{font-size:40px;margin:0 0 10px}.hero p{color:var(--mu);max-width:620px;margin:0 auto 22px;font-size:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.card{background:var(--pn);border:1px solid var(--bd);border-radius:14px;padding:16px}
+.tile{display:flex;flex-direction:column;gap:6px;cursor:pointer;transition:border-color .2s,transform .2s}.tile:hover{border-color:var(--ac);transform:translateY(-2px)}
+.mu{color:var(--mu);font-size:14px}.badge{align-self:flex-start;font-size:12px;border:1px solid var(--bd);border-radius:10px;padding:1px 10px;color:var(--ac)}
+header{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--bd);max-width:980px;margin:auto}header b{font:700 20px Georgia,serif;margin-right:auto}
+.v{animation:fi .3s}@keyframes fi{from{opacity:0;transform:translateY(6px)}}
+.bd{display:grid;grid-template-columns:repeat(8,1fr);width:100%;max-width:520px;aspect-ratio:1;border:6px solid #4a3416;border-radius:10px;overflow:hidden;margin:auto;box-shadow:0 10px 30px #0005;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.sq{position:relative;cursor:pointer}.sq.l{background:var(--l)}.sq.d{background:var(--d)}
+.sq.hl::before,.sq.sel::before{content:"";position:absolute;inset:0;z-index:1}.sq.hl::before{background:#ffe14d66}.sq.sel::before{background:#6bd46b99}
+.sq.dt::after{content:"";position:absolute;left:35%;top:35%;width:30%;height:30%;border-radius:50%;background:#0003;z-index:3}.sq.dt.cap::after{left:5%;top:5%;width:90%;height:90%;background:none;border:5px solid #0003}
+.co{position:absolute;font:600 10px system-ui;font-style:normal;opacity:.75;pointer-events:none;z-index:1}.sq.l .co{color:var(--d)}.sq.d .co{color:var(--l)}
+.pc{position:absolute;inset:0;z-index:2;pointer-events:none;filter:drop-shadow(0 2px 1.5px #0005);will-change:transform}.pc svg{width:100%;height:100%;display:block}
+.two{display:grid;grid-template-columns:minmax(0,480px) 1fr;gap:20px;align-items:start}@media(max-width:760px){.two{grid-template-columns:1fr}}
+.mvs{font-size:14px;color:var(--mu);line-height:1.9}.mvs b{color:var(--tx);background:var(--bd);border-radius:4px;padding:0 4px}
+.ctl{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}select{background:var(--pn);color:var(--tx);border:1px solid var(--bd);border-radius:10px;padding:10px}
+footer{text-align:center;color:var(--mu);font-size:12px;padding:20px}
+.rr{display:flex;gap:12px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--bd);flex-wrap:wrap}.rr b{width:90px}.rr span:nth-child(2){font:700 22px Georgia,serif;color:var(--ac);width:60px}
+.slot{display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--pn);border:1px dashed var(--bd);border-radius:12px;padding:10px;cursor:pointer;text-align:center;font-size:13px}.slot:hover{border-color:var(--ac)}.slot button{padding:4px 10px;font-size:13px}
+.sp{position:relative;width:64px;height:64px;background:var(--l);border-radius:8px}.pl{font-weight:600;padding:6px 2px}.pc img{width:100%;height:100%;object-fit:contain;display:block}
+input[type=text]{background:var(--pn);color:var(--tx);border:1px solid var(--bd);border-radius:10px;padding:10px;font:inherit}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ac);color:#fff;padding:10px 18px;border-radius:20px;opacity:0;transition:.3s;pointer-events:none;z-index:50;max-width:90vw;text-align:center}.toast.on{opacity:1;transform:translate(-50%,0)}
+</style></head><body>
+<div id="land"><div class="w">
+<div class="hero"><h1>♞ Chess Academy</h1><p>Онлайн-школа шахматных дебютов и матовых схем. Пошаговые уроки на интерактивной доске, объяснение идей каждого хода и тренировка в игре против компьютера.</p><button class="pri" onclick="start()">Начать</button></div>
+<h2>О проекте</h2><div class="grid">
+<div class="card"><b>♙ Дебюты</b><p class="mu">Каталог главных дебютов: идеи сторон, ключевые ходы и типичные планы.</p></div>
+<div class="card"><b>♚ Матовые схемы</b><p class="mu">Выигрышные матовые комбинации и приёмы: от детского мата до мата на задохнувшемся короле.</p></div>
+<div class="card"><b>♟ Игра с ботом</b><p class="mu">Партия против компьютера: лёгкий, средний и тяжёлый уровень. Бесплатно.</p></div><div class="card"><b>👥 Игра с другом</b><p class="mu">Создайте партию и отправьте другу ссылку-приглашение.</p></div><div class="card"><b>🏆 Рейтинг и профиль</b><p class="mu">Собственный рейтинг на каждом уровне бота, свои фигуры и оформление доски.</p></div></div>
+<h2>Как это работает</h2><div class="card"><p>Часть уроков доступна бесплатно. Платные уроки открываются отдельно ($0.99) или все сразу по тарифу «Полный доступ» ($2.59). Оплата в долларах США (WMZ) через WebMoney Transfer. Доступ открывается автоматически после подтверждения платежа.</p><p class="mu">Каталог постоянно пополняется. Он содержит основные дебюты и матовые схемы, а не вообще все варианты, которых в шахматах тысячи.</p></div>
+</div></div>
+<div id="app" hidden><header><b>♞ Chess Academy</b><button data-v="o" onclick="show('o')">Дебюты</button><button data-v="m" onclick="show('m')">Маты</button><button data-v="p" onclick="show('p')">Играть</button><button data-v="n" onclick="show('n')">С другом</button><button data-v="s" onclick="show('s')" id="hp"></button><button onclick="$('land').hidden=false;$('app').hidden=true">О сайте</button></header>
+<div class="w">
+<section class="v" id="vo"><h2>Шахматные дебюты</h2><p class="mu pn"></p><div class="grid" id="lo"></div></section>
+<section class="v" id="vm" hidden><h2>Выигрышные матовые схемы</h2><p class="mu pn"></p><div class="grid" id="lm"></div></section>
+<section class="v" id="vl" hidden><button onclick="show(LS.l.c)">← К списку</button><h2 id="lt"></h2><div class="two"><div><div class="bd" id="lb"></div><div class="ctl"><button onclick="step(-99)">⏮</button><button onclick="step(-1)">◀</button><button class="pri" id="pl" onclick="auto()">▶ Авто</button><button onclick="step(1)">▶</button><button onclick="step(99)">⏭</button></div></div><div><p id="ln"></p><div class="mvs" id="lm2"></div></div></div></section>
+<section class="v" id="vk" hidden><button onclick="show(LK.c)">← К списку</button><div class="card" style="margin-top:12px"><h2 id="kt"></h2><p class="mu">Этот урок платный.</p><div class="ctl"><button class="pri" id="k1"></button><button id="k2"></button></div><p class="mu" id="kn"></p></div></section>
+<section class="v" id="vp" hidden><h2>Игра с компьютером</h2><div class="ctl" id="rt"></div><div class="ctl"><select id="gl" onchange="rchips()"><option value="1">Лёгкий</option><option value="2" selected>Средний</option><option value="3">Тяжёлый</option></select><select id="gc"><option value="w">Белыми</option><option value="b">Чёрными</option></select><button class="pri" onclick="ng()">Новая партия</button><button onclick="undo()">Отменить ход</button><button onclick="resign()">Сдаться</button></div>
+<div class="two"><div><div class="pl" id="gt"></div><div class="bd" id="gb"></div><div class="pl" id="gu"></div><p id="gs" style="font-weight:700"></p></div><div class="mvs" id="gm"></div></div></section>
+<section class="v" id="vn" hidden><h2>Игра с другом</h2><div id="nl"><div class="card"><p class="mu">Создайте партию и отправьте другу ссылку. Когда он откроет её, игра начнётся.</p><div class="ctl"><select id="oc"><option value="w">Я играю белыми</option><option value="b">Я играю чёрными</option><option value="r">Случайный цвет</option></select><button class="pri" onclick="mkRoom()">Создать партию</button></div></div></div>
+<div id="np" hidden><div class="card" id="ni"></div><div class="two"><div><div class="pl" id="nt"></div><div class="bd" id="nb"></div><div class="pl" id="nu"></div><p id="ns" style="font-weight:700"></p></div><div><div class="ctl"><button onclick="nres()">Сдаться</button><button onclick="nleave()">Выйти</button></div><div class="mvs" id="nm2"></div></div></div></div></section>
+<section class="v" id="vs" hidden><h2>Профиль и настройки</h2>
+<div class="card"><b>Профиль</b><div class="ctl"><input id="pn2" type="text" maxlength="16" placeholder="Ваше имя" oninput="PR.name=this.value.trim()||'Игрок';savePR();hdr()"></div><div class="ctl" id="av"></div></div>
+<div class="card"><b>Рейтинг</b><div id="rl"></div><p class="mu">Рейтинг отдельный на каждом уровне бота. Победа +8, поражение −4, ничья 0. Минимум 100. Партии с отменой хода рейтинг не меняют.</p></div>
+<div class="card"><b>Оформление</b><div class="ctl" id="th"></div><label><input type="checkbox" id="an" onchange="PR.anim=this.checked;savePR()"> Плавная анимация ходов</label></div>
+<div class="card"><b>Свои фигуры</b><p class="mu">Нажмите на фигуру и выберите изображение (PNG или JPG), например фото из альбома. Оно заменит фигуру на доске. Файлы хранятся только в вашем браузере.</p><div class="grid" id="sl" style="grid-template-columns:repeat(auto-fill,minmax(110px,1fr))"></div><div class="ctl"><button onclick="resetImgs()">Вернуть стандартные фигуры</button></div></div></section>
+</div></div>
+<div id="tt" class="toast"></div><footer>© Chess Academy · Платные уроки: оплата через WebMoney Transfer (WMZ) · Цены в долларах США</footer>
+<script>
+const $=id=>document.getElementById(id);
+// Шахматный движок: общий для сайта и сервера
+const START='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',FL='abcdefgh',PV={p:100,n:320,b:330,r:500,q:900,k:0};
+const KN=[[1,2],[2,1],[-1,2],[-2,1],[1,-2],[2,-1],[-1,-2],[-2,-1]],KG=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]],DR=[[1,0,'Rr'],[-1,0,'Rr'],[0,1,'Rr'],[0,-1,'Rr'],[1,1,'Bb'],[1,-1,'Bb'],[-1,1,'Bb'],[-1,-1,'Bb']];
+const SQ=i=>FL[i&7]+(8-(i>>3)),isW=c=>c==c.toUpperCase();
+function fen(f){const[p,t,c,e]=f.split(' ');const b=[];for(const ch of p){if(ch=='/')continue;if(/\d/.test(ch))for(let i=0;i<+ch;i++)b.push('');else b.push(ch)}return{b,t,c:c=='-'?'':c,e:e&&e!='-'?(8-e[1])*8+FL.indexOf(e[0]):-1,n:1}}
+function att(b,sq,w){const r=sq>>3,f=sq&7,ok=(a,c)=>a>=0&&a<8&&c>=0&&c<8,pr=r+(w?1:-1);
+for(const df of[-1,1])if(ok(pr,f+df)&&b[pr*8+f+df]==(w?'P':'p'))return 1;
+for(const[a,c]of KN)if(ok(r+a,f+c)&&b[(r+a)*8+f+c]==(w?'N':'n'))return 1;
+for(const[a,c]of KG)if(ok(r+a,f+c)&&b[(r+a)*8+f+c]==(w?'K':'k'))return 1;
+for(const[a,c,t]of DR){let x=r+a,y=f+c;while(ok(x,y)){const q=b[x*8+y];if(q){if(q==(w?t[0]:t[1])||q==(w?'Q':'q'))return 1;break}x+=a;y+=c}}return 0}
+function gen(s){const m=[],w=s.t=='w',b=s.b;const add=(f,t,fl)=>{const p=b[f].toLowerCase()=='p'&&((t>>3)==0||(t>>3)==7);if(p)for(const q of'qrbn')m.push({f,t,p:q});else m.push({f,t,fl})};
+for(let i=0;i<64;i++){const c=b[i];if(!c||isW(c)!=w)continue;const p=c.toLowerCase(),r=i>>3,f=i&7;
+if(p=='p'){const d=w?-1:1,one=i+d*8;if(one<0||one>63)continue;if(!b[one]){add(i,one);if(r==(w?6:1)&&!b[one+d*8])add(i,one+d*8,'d')}
+for(const df of[-1,1]){if(f+df<0||f+df>7)continue;const t=one+df;if(b[t]&&isW(b[t])!=w)add(i,t);else if(t==s.e)add(i,t,'e')}}
+else if(p=='n'||p=='k'){for(const[a,c2]of p=='n'?KN:KG){const x=r+a,y=f+c2;if(x<0||x>7||y<0||y>7)continue;const t=x*8+y;if(!b[t]||isW(b[t])!=w)add(i,t)}}
+else for(const[a,c2,t0]of DR){if(p=='r'&&t0=='Bb'||p=='b'&&t0=='Rr')continue;let x=r+a,y=f+c2;while(x>=0&&x<8&&y>=0&&y<8){const t=x*8+y;if(!b[t])add(i,t);else{if(isW(b[t])!=w)add(i,t);break}x+=a;y+=c2}}}
+const k=w?60:4,o=!w;if(b[k]==(w?'K':'k')&&!att(b,k,o)){if(s.c.includes(w?'K':'k')&&!b[k+1]&&!b[k+2]&&!att(b,k+1,o)&&!att(b,k+2,o))m.push({f:k,t:k+2,fl:'k'});
+if(s.c.includes(w?'Q':'q')&&!b[k-1]&&!b[k-2]&&!b[k-3]&&!att(b,k-1,o)&&!att(b,k-2,o))m.push({f:k,t:k-2,fl:'q'})}return m}
+function make(s,m){const b=s.b.slice(),c=b[m.f],w=s.t=='w';let e=-1;b[m.t]=m.p?(w?m.p.toUpperCase():m.p):c;b[m.f]='';if(m.fl=='e')b[m.t+(w?8:-8)]='';if(m.fl=='d')e=(m.f+m.t)/2;
+if(m.fl=='k'){b[m.t-1]=b[m.t+1];b[m.t+1]=''}if(m.fl=='q'){b[m.t+1]=b[m.t-2];b[m.t-2]=''}let ca=s.c;if(c=='K')ca=ca.replace(/[KQ]/g,'');if(c=='k')ca=ca.replace(/[kq]/g,'');
+for(const q of[m.f,m.t]){const z={63:'K',56:'Q',7:'k',0:'q'}[q];if(z)ca=ca.replace(z,'')}return{b,t:w?'b':'w',c:ca,e,n:s.n+(w?0:1)}}
+const inChk=s=>att(s.b,s.b.indexOf(s.t=='w'?'K':'k'),s.t!='w');
+function legal(s){const mv=s.t;return gen(s).filter(m=>{const n=make(s,m);return!att(n.b,n.b.indexOf(mv=='w'?'K':'k'),mv!='w')})}
+function san(s,m){const c=s.b[m.f],p=c.toUpperCase();let x;if(m.fl=='k')x='O-O';else if(m.fl=='q')x='O-O-O';else{const cap=s.b[m.t]||m.fl=='e';
+if(p=='P')x=(cap?FL[m.f&7]+'x':'')+SQ(m.t)+(m.p?'='+m.p.toUpperCase():'');else{let d='';const o=legal(s).filter(q=>q.f!=m.f&&s.b[q.f]==c&&q.t==m.t);if(o.length)d=o.some(q=>(q.f&7)==(m.f&7))?(o.some(q=>(q.f>>3)==(m.f>>3))?SQ(m.f):8-(m.f>>3)):FL[m.f&7];x=p+d+(cap?'x':'')+SQ(m.t)}}
+const n=make(s,m);return x+(inChk(n)?(legal(n).length?'+':'#'):'')}
+function ev(s){let v=0;for(let i=0;i<64;i++){const c=s.b[i];if(!c)continue;const p=c.toLowerCase(),w=isW(c),r=i>>3,f=i&7,cen=7-Math.abs(f-3.5)-Math.abs(r-3.5);let x=PV[p];if(p=='p')x+=(w?6-r:r-1)*8+cen*5;else if(p=='n'||p=='b')x+=cen*5;v+=w?x:-x}return v}
+const sc=(m,s)=>(s.b[m.t]?PV[s.b[m.t].toLowerCase()]*10-PV[s.b[m.f].toLowerCase()]:0)+(m.p?800:0);
+function nm(s,d,a,b,ply){if(!d)return(s.t=='w'?1:-1)*ev(s);const L=legal(s);if(!L.length)return inChk(s)?-1e5+ply:0;L.sort((x,y)=>sc(y,s)-sc(x,s));for(const m of L){const v=-nm(make(s,m),d-1,-b,-a,ply+1);if(v>a){a=v;if(a>=b)break}}return a}
+if(typeof module!=='undefined')module.exports={START,FL,PV,fen,legal,make,san,inChk,SQ,isW,ev,sc,nm};
+
+const SV={p:'<circle cx="22.5" cy="14" r="5.5"/><path d="M16 36c0-9 4-10 6.5-15 2.5 5 6.5 6 6.5 15z"/><rect x="12.5" y="35.5" width="20" height="4.5" rx="1.5"/>',
+r:'<path d="M12 40v-4.5h21V40zM14.5 35.5V17h16v18.5zM12 17V9h4v3h4V9h5v3h4V9h4v8z"/>',
+n:'<path d="M12.5 40v-4.5h21V40zM14 35.5c0-8 3-12 7.5-16.5-2.5-1.5-3.5-3.5-3.5-6 3-1.5 5.5-1 6.5 1.5 4-2 9 .5 10.5 6.5 2 8 1 12 1 14.5z"/><circle cx="25" cy="15.5" r="1.3" style="fill:var(--dc);stroke:none"/>',
+b:'<circle cx="22.5" cy="8.5" r="3"/><path d="M22.5 11c-4 3.5-6 6.5-6 11 0 3 1.5 5 3 6.5h6c1.5-1.5 3-3.5 3-6.5 0-4.5-2-7.5-6-11zM16 36c2-4 4-6 6.5-6s4.5 2 6.5 6zM12.5 40v-4.5h20V40z"/><path d="M22.5 15v7M19.5 18.5h6" style="stroke:var(--dc)" stroke-width="1.6"/>',
+q:'<path d="M12.5 40v-4.5h20V40zM13 35.5l-2.5-18 7.5 8 4.5-13 4.5 13 7.5-8-2.5 18z"/><circle cx="10.5" cy="16" r="2.3"/><circle cx="18" cy="11" r="2.3"/><circle cx="22.5" cy="8" r="2.3"/><circle cx="27" cy="11" r="2.3"/><circle cx="34.5" cy="16" r="2.3"/>',
+k:'<path d="M12.5 40v-4.5h20V40zM14 35.5c-1.5-6.5 0-11 8.5-15 8.5 4 10 8.5 8.5 15z"/><path d="M22.5 20.5V6M18 10.5h9" style="stroke:var(--dc)" stroke-width="2.4"/>'};
+const pcs=c=>{const k=(isW(c)?'w':'b')+c.toLowerCase();if(IMG[k])return `<span class="pc"><img src="${IMG[k]}" alt="" draggable="false"></span>`;return `<span class="pc"><svg viewBox="0 0 45 45" fill="${isW(c)?'#fbfbfb':'#3b3b3b'}" stroke="#111" stroke-width="1.6" stroke-linejoin="round" style="--dc:${isW(c)?'#111':'#e8e8e8'}">${SV[c.toLowerCase()]}</svg></span>`};
+function board(el,s,o){o=o||{};let h='';for(let k=0;k<64;k++){const i=o.flip?63-k:k,c=s.b[i],r=i>>3,f=i&7,cl=['sq',(r+f)%2?'d':'l'];if(o.last&&(o.last.f==i||o.last.t==i))cl.push('hl');if(o.sel==i)cl.push('sel');if(o.dest&&o.dest.includes(i)){cl.push('dt');if(c)cl.push('cap')}
+const co=(k>>3==7?`<i class="co" style="right:3px;bottom:1px">${FL[f]}</i>`:'')+(k%8==0?`<i class="co" style="left:3px;top:1px">${8-r}</i>`:'');h+=`<div class="${cl.join(' ')}" data-i="${i}">${co}${c?pcs(c):''}</div>`}
+el.innerHTML=h;if(o.click)el.onclick=e=>{const q=e.target.closest('.sq');if(q)o.click(+q.dataset.i)};
+if(o.anim&&PR.anim){const m=o.anim,kk=i=>o.flip?63-i:i,a=kk(m.f),b=kk(m.t),p=el.querySelector(`.sq[data-i="${m.t}"] .pc`);if(p){p.style.transition='none';p.style.zIndex=5;p.style.transform=`translate(${((a%8)-(b%8))*100}%,${((a>>3)-(b>>3))*100}%)`;p.offsetWidth;p.style.transition='transform .3s cubic-bezier(.25,.8,.25,1)';p.style.transform='none'}}}
+const WIN=8,LOSS=4,MIN=100,AVS=['♞','♛','♚','♜','♝','♟','🦁','🦅'],TH={classic:['Классика','#f0d9b5','#b58863'],green:['Зелёная','#eeeed2','#769656'],blue:['Синяя','#dee3e6','#8ca2ad'],dark:['Тёмная','#9a9a9a','#4d4d4d']},LV=['','Лёгкий','Средний','Тяжёлый'],PN={k:'король',q:'ферзь',r:'ладья',b:'слон',n:'конь',p:'пешка'};
+const ld0=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}},sv0=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return 1}catch(e){return 0}};
+const PR=Object.assign({name:'Игрок',av:'♞',board:'classic',anim:true,r:{1:100,2:100,3:100},st:{1:[0,0,0],2:[0,0,0],3:[0,0,0]}},ld0('pk_pr',{})),IMG=ld0('pk_img',{});
+const savePR=()=>sv0('pk_pr',PR),title=r=>r<120?'Новичок':r<160?'Любитель':r<220?'Опытный':r<300?'Мастер':'Гроссмейстер';
+function rate(lv,res){const o=PR.r[lv];PR.r[lv]=res=='w'?o+WIN:res=='l'?Math.max(MIN,o-LOSS):o;PR.st[lv][res=='w'?0:res=='l'?1:2]++;savePR();return PR.r[lv]-o}
+function theme(){const t=TH[PR.board]||TH.classic,st=document.documentElement.style;st.setProperty('--l',t[1]);st.setProperty('--d',t[2])}
+function hdr(){$('hp').textContent=PR.av+' '+PR.name}
+function toast(t){const e=$('tt');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),4500)}
+function setup(){$('pn2').value=PR.name;$('av').innerHTML=AVS.map(a=>`<button class="${a==PR.av?'on':''}" onclick="PR.av='${a}';savePR();setup()">${a}</button>`).join('');
+$('th').innerHTML=Object.entries(TH).map(([k,t])=>`<button class="${k==PR.board?'on':''}" onclick="PR.board='${k}';savePR();theme();setup();redraw()">${t[0]}</button>`).join('');$('an').checked=PR.anim;
+$('rl').innerHTML=[1,2,3].map(l=>`<div class="rr"><b>${LV[l]}</b><span>${PR.r[l]}</span><span class="mu">${title(PR.r[l])} · побед ${PR.st[l][0]}, поражений ${PR.st[l][1]}, ничьих ${PR.st[l][2]}</span></div>`).join('');
+$('sl').innerHTML=['w','b'].flatMap(c=>'kqrbnp'.split('').map(p=>`<label class="slot"><div class="sp">${pcs(c=='w'?p.toUpperCase():p)}</div><span class="mu">${c=='w'?'Белый':'Чёрный'} ${PN[p]}</span><input type="file" accept="image/*" hidden onchange="upl('${c+p}',this)">${IMG[c+p]?`<button onclick="event.preventDefault();delImg('${c+p}')">Убрать</button>`:''}</label>`)).join('');hdr()}
+function upl(k,inp){const f=inp.files[0];if(!f)return;if(f.size>8e6){alert('Файл слишком большой (до 8 МБ).');return}const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=160;const x=c.getContext('2d'),q=Math.min(160/im.width,160/im.height);x.drawImage(im,(160-im.width*q)/2,(160-im.height*q)/2,im.width*q,im.height*q);IMG[k]=c.toDataURL('image/png');if(!sv0('pk_img',IMG)){delete IMG[k];alert('Не удалось сохранить: в браузере не хватает места.')}setup();redraw()};im.onerror=()=>alert('Не удалось открыть изображение.');im.src=fr.result};fr.readAsDataURL(f);inp.value=''}
+function delImg(k){delete IMG[k];sv0('pk_img',IMG);setup();redraw()}
+function resetImgs(){for(const k in IMG)delete IMG[k];sv0('pk_img',IMG);setup();redraw()}
+function redraw(){if(G.s)dg();if(typeof ON!=='undefined'&&ON&&ON.v)od();if(LS.st)ld()}
+
+const L=[{"id": "o1", "c": "o", "t": "Итальянская партия", "d": "Классика: быстрая игра за центр и атака на f7.", "free": true, "mv": "e4 e5 Nf3 Nc6 Bc4 Bc5 c3 Nf6 d3 d6 O-O O-O", "n": "Белые развивают слона на c4, целясь в f7, и готовят c3 и d3 для спокойного центра. Чёрные отвечают симметрично и тоже борются за центр."}, {"id": "o2", "c": "o", "t": "Ферзевый гамбит принятый", "d": "Белые жертвуют пешку ради центра.", "free": true, "mv": "d4 d5 c4 dxc4 Nf3 Nf6 e3 e6 Bxc4 c5 O-O a6", "n": "После 2.c4 чёрные берут пешку, но белые быстро возвращают её и получают преимущество в развитии и пространстве."}, {"id": "o3", "c": "o", "t": "Испанская партия", "d": "Давление на коня c6 и центр чёрных.", "free": false}, {"id": "o4", "c": "o", "t": "Сицилианская защита, Найдорф", "d": "Острая контратака чёрных на ферзевом фланге.", "free": false}, {"id": "o5", "c": "o", "t": "Французская защита", "d": "Прочная защита с контрударами по центру.", "free": false}, {"id": "o6", "c": "o", "t": "Староиндийская защита", "d": "Гипермодернизм: чёрные дают белым центр.", "free": false}, {"id": "o7", "c": "o", "t": "Защита Каро-Канн", "d": "Надёжная защита без слабостей.", "free": false}, {"id": "o8", "c": "o", "t": "Английское начало", "d": "Гибкая система с борьбой за поле d5.", "free": false}, {"id": "m1", "c": "m", "t": "Детский мат", "d": "Мат ферзём и слоном на f7 за 4 хода.", "free": true, "mv": "e4 e5 Qh5 Nc6 Bc4 Nf6 Qxf7#", "n": "Ферзь и слон бьют по f7. Если чёрные не замечают угрозы, партия заканчивается за четыре хода. Защита: следите за пунктом f7."}, {"id": "m2", "c": "m", "t": "Коридорный мат", "d": "Мат ладьёй по последней горизонтали.", "free": true, "mv": "Ra8#", "n": "Король закрыт собственными пешками. Ладья занимает открытую линию и ставит мат. Чтобы не попасть в такую ситуацию, создавайте королю «форточку».", "fen": "6k1/5ppp/8/8/8/8/5PPP/R5K1 w - - 0 1"}, {"id": "m3", "c": "m", "t": "Мат Легаля", "d": "Жертва ферзя ради мата тремя фигурами.", "free": false}, {"id": "m4", "c": "m", "t": "Мат двумя ладьями («лесенка»)", "d": "Две ладьи по очереди теснят короля к краю.", "free": false}, {"id": "m5", "c": "m", "t": "Мат на задохнувшемся короле", "d": "Жертва ферзя и мат конём.", "free": false}],P1=0.99,PA=2.59;let PID='';try{PID=localStorage.getItem('pk_pid')||''}catch(e){}if(!PID){PID=crypto.randomUUID();try{localStorage.setItem('pk_pid',PID)}catch(e){}}
+let API=false,AC=[],LS={},LK={},G={s:null,h:[],mv:[]},tm=0;const has=l=>l.free||AC.includes('all')||AC.includes(l.id);
+const J=(u,b)=>fetch(u,b&&{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)}).then(r=>r.json());
+function start(){$('land').hidden=true;$('app').hidden=false;show('o');scrollTo(0,0)}
+function show(v){document.querySelectorAll('.v').forEach(x=>x.hidden=x.id!='v'+v);document.querySelectorAll('header button[data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v==v));clearInterval(tm);tm=0;scrollTo(0,0);if($('pl'))$('pl').textContent='▶ Авто';if(v=='s')setup();if(v=='p'){if(!G.s)ng();rchips()}}
+function list(){for(const c of['o','m']){$('l'+c).innerHTML=L.filter(l=>l.c==c).map(l=>`<div class="card tile" onclick="op('${l.id}')"><b>${l.t}</b><span class="mu">${l.d}</span><span class="badge">${has(l)?(l.free?'Бесплатно':'Открыто'):'🔒 $'+P1.toFixed(2)}</span></div>`).join('')}
+document.querySelectorAll('.pn').forEach(p=>p.innerHTML=API?'Бесплатные уроки открыты сразу. <a href="#" onclick="buy(\'all\');return false">Полный доступ — $'+PA.toFixed(2)+'</a>':'Платёжный сервер не подключён: доступны только бесплатные уроки.')}
+async function op(id){const l=L.find(x=>x.id==id);let d=l.mv?l:null;if(!d&&API){try{const r=await fetch('/api/lesson?id='+id+'&pid='+PID);if(r.ok)d=Object.assign({},l,await r.json())}catch(e){}}d?vw(d):lock(l)}
+function lock(l){LK=l;$('kt').textContent=l.t;$('k1').textContent='Открыть урок — $'+P1.toFixed(2);$('k1').onclick=()=>buy(l.id);$('k2').textContent='Полный доступ — $'+PA.toFixed(2);$('k2').onclick=()=>buy('all');$('kn').textContent=API?'Оплата через WebMoney. После подтверждения платежа урок откроется автоматически.':'Покупки сейчас недоступны: платёжный сервер не подключён.';show('k')}
+async function buy(item){if(!API){alert('Покупки доступны только на официальном сайте, подключённом к серверу платежей.');return}
+try{const o=await J('/api/order',{pid:PID,item});if(!o.no)throw 0;const f=document.createElement('form');f.method='POST';f.action='https://merchant.wmtransfer.com/lmi/payment_utf.asp';f.target='_blank';f.acceptCharset='utf-8';
+const F={LMI_PAYEE_PURSE:o.purse,LMI_PAYMENT_AMOUNT:o.amount,LMI_PAYMENT_NO:o.no,LMI_PAYMENT_DESC:o.desc};for(const k in F){const x=document.createElement('input');x.type='hidden';x.name=k;x.value=F[k];f.appendChild(x)}document.body.appendChild(f);f.submit();f.remove();toast('Откройте страницу оплаты WebMoney. Доступ откроется сразу после платежа.');payPoll()}catch(e){alert('Не удалось создать заказ. Попробуйте позже.')}}
+let pt=0,accInit=false;function payPoll(){clearInterval(pt);let n=0;pt=setInterval(()=>{acc();if(++n>120)clearInterval(pt)},5000)}
+async function acc(){if(!API)return;try{const a=await fetch('/api/access?pid='+PID).then(r=>r.json());if(a.length!=AC.length){AC=a;list();if(accInit){toast('Оплата получена, уроки открыты');if(!$('vk').hidden&&has(LK))op(LK.id)}}accInit=true}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)acc()});
+fetch('/api/ping').then(r=>{API=r.ok;acc();list();const q=new URLSearchParams(location.search),rm=q.get('room');if(rm&&/^[a-f0-9]{8}$/.test(rm)){start();show('n');joinRoom(rm)}else if(q.get('paid'))start()}).catch(()=>list());list();
+function vw(l){let s=l.fen?fen(l.fen):fen(START);const st=[s],sn=[],lm=[];for(const t of l.mv.split(' ')){const m=legal(s).find(x=>san(s,x).replace(/[+#]/g,'')==t.replace(/[+#]/g,''));if(!m)break;sn.push(san(s,m));lm.push(m);s=make(s,m);st.push(s)}
+LS={l,st,sn,lm,i:0};$('lt').textContent=l.t;$('ln').textContent=l.n;show('l');ld()}
+function ld(){board($('lb'),LS.st[LS.i],{last:LS.i?LS.lm[LS.i-1]:null,anim:LS.an});LS.an=null;$('lm2').innerHTML=LS.sn.map((x,k)=>(k%2?'':((k/2|0)+1)+'. ')+`<span ${k==LS.i-1?'':'style="cursor:pointer"'} onclick="LS.i=${k+1};ld()">${k==LS.i-1?'<b>'+x+'</b>':x}</span> `).join('')}
+function step(d){const n=Math.max(0,Math.min(LS.st.length-1,LS.i+d));LS.an=n==LS.i+1?LS.lm[LS.i]:null;LS.i=n;ld()}
+function auto(){if(tm){clearInterval(tm);tm=0;$('pl').textContent='▶ Авто';return}$('pl').textContent='⏸ Пауза';if(LS.i>=LS.st.length-1)LS.i=0;tm=setInterval(()=>{if(LS.i>=LS.st.length-1){clearInterval(tm);tm=0;$('pl').textContent='▶ Авто';return}step(1)},1100)}
+function ng(){G={s:fen(START),h:[],mv:[],me:$('gc').value,lv:+$('gl').value,sel:-1,over:false,last:null,cheat:false};rchips();dg();if(G.me=='b')setTimeout(bm,300)}
+function dg(){$('gt').textContent='🤖 Бот · '+LV[G.lv];$('gu').textContent=PR.av+' '+PR.name+' · рейтинг '+PR.r[G.lv];const Ls=legal(G.s),dest=G.sel>=0?Ls.filter(m=>m.f==G.sel).map(m=>m.t):[];board($('gb'),G.s,{flip:G.me=='b',sel:G.sel,dest,last:G.last,click:gc,anim:G.an});G.an=null;
+$('gs').textContent=G.over?G.res:(inChk(G.s)?'Шах! ':'')+(G.s.t==G.me?'Ваш ход':'Бот думает…');$('gm').innerHTML=G.mv.map((x,k)=>(k%2?'':((k/2|0)+1)+'. ')+x+' ').join('')}
+function gc(i){if(G.over||G.s.t!=G.me)return;const m=G.sel>=0&&legal(G.s).find(m=>m.f==G.sel&&m.t==i&&(!m.p||m.p=='q'));if(m)return mv(m);const c=G.s.b[i];G.sel=c&&isW(c)==(G.me=='w')?i:-1;dg()}
+function mv(m){G.mv.push(san(G.s,m));G.h.push(G.s);G.s=make(G.s,m);G.last=m;G.an=m;G.sel=-1;fin();dg();if(!G.over&&G.s.t!=G.me)setTimeout(bm,250)}
+function bm(){if(!G.s||G.over||G.s.t==G.me)return;const s=G.s,Ls=legal(s);if(!Ls.length)return;const[d,nz]=[0,[1,150],[2,20],[3,3]][G.lv];let best=Ls[0],al=-1e9;Ls.sort((x,y)=>sc(y,s)-sc(x,s));
+for(const m of Ls){const v=-nm(make(s,m),d-1,-1e9,nz?1e9:-al,1)+Math.random()*nz;if(v>al){al=v;best=m}}mv(best)}
+function fin(){if(legal(G.s).length)return;G.over=true;const mate=inChk(G.s);G.res=mate?'Мат! Победили '+(G.s.t=='w'?'чёрные':'белые'):'Пат. Ничья';score(mate?(G.s.t==G.me?'l':'w'):'d')}
+function score(res){if(G.cheat){G.res+=' · без рейтинга (использована отмена хода)';return}const d=rate(G.lv,res);G.res+=res=='w'?' · +'+d+' к рейтингу':res=='l'?(d?' · '+d+' к рейтингу':' · рейтинг на минимуме'):' · рейтинг не изменился';rchips()}
+function resign(){if(!G.s||G.over)return;if(!G.mv.length)return ng();if(!confirm('Сдаться? Это засчитается как поражение.'))return;G.over=true;G.res='Вы сдались';score('l');dg()}
+function rchips(){const l=+$('gl').value;$('rt').innerHTML=[1,2,3].map(i=>`<span class="badge" style="${i==l?'border-color:var(--ac);color:var(--tx)':''}">${LV[i]}: ${PR.r[i]}</span>`).join('')}
+function undo(){if(!G.h.length||G.over)return;G.cheat=true;let k=G.s.t==G.me?2:1;while(k--&&G.h.length){G.s=G.h.pop();G.mv.pop()}G.over=false;G.last=null;G.sel=-1;dg();if(G.s.t!=G.me)setTimeout(bm,250)}
+let ON=null;
+async function mkRoom(){if(!API)return alert('Онлайн-игра доступна только на официальном сайте.');try{const j=await J('/api/room',{pid:PID,name:PR.name,color:$('oc').value});if(!j.id)throw 0;enter(j.id,j.color)}catch(e){alert('Не удалось создать партию.')}}
+async function joinRoom(id){try{const j=await J('/api/room/'+id+'/join',{pid:PID,name:PR.name});if(!j.color)throw 0;enter(id,j.color)}catch(e){alert('Партия не найдена или уже занята.');history.replaceState(null,'',location.pathname)}}
+function enter(id,color){nleave(1);ON={id,color,v:null,sel:-1,cnt:0,an:null};$('nl').hidden=true;$('np').hidden=false;history.replaceState(null,'','?room='+id);
+ON.es=new EventSource('/api/room/'+id+'/events');ON.es.onmessage=e=>{const v=JSON.parse(e.data);ON.an=v.moves.length==ON.cnt+1&&v.last?v.last:null;ON.cnt=v.moves.length;ON.v=v;od()}}
+function od(){const v=ON.v,me=ON.color,op=me=='w'?'b':'w',Ls=v.status=='play'?legal(v.s):[],dest=ON.sel>=0?Ls.filter(m=>m.f==ON.sel).map(m=>m.t):[];
+board($('nb'),v.s,{flip:me=='b',sel:ON.sel,dest,last:v.last,click:nc,anim:ON.an});ON.an=null;
+$('nt').textContent=v.names[op]?'👤 '+v.names[op]:'⏳ Ждём друга…';$('nu').textContent=PR.av+' '+PR.name;
+const link=location.origin+location.pathname+'?room='+v.id;$('ni').hidden=v.status!='wait';
+$('ni').innerHTML='<b>Пригласите друга</b><p class="mu">Отправьте ссылку. Игра начнётся, когда друг её откроет.</p><div class="ctl"><input type="text" readonly value="'+link+'" onclick="this.select()" style="flex:1;min-width:0"><button class="pri" onclick="cpl()">Копировать</button>'+(navigator.share?'<button onclick="shl()">Поделиться</button>':'')+'</div>';
+$('ns').textContent=v.status=='end'?v.result:v.status=='wait'?'Ожидание соперника':(inChk(v.s)?'Шах! ':'')+(v.s.t==me?'Ваш ход':'Ход соперника');
+$('nm2').innerHTML=v.moves.map((x,k)=>(k%2?'':((k/2|0)+1)+'. ')+x+' ').join('')}
+function nc(i){const v=ON&&ON.v;if(!v||v.status!='play'||v.s.t!=ON.color)return;const m=ON.sel>=0&&legal(v.s).find(m=>m.f==ON.sel&&m.t==i&&(!m.p||m.p=='q'));
+if(m){ON.sel=-1;J('/api/room/'+ON.id+'/move',{pid:PID,f:m.f,t:m.t,p:m.p||''}).catch(()=>{});return od()}const c=v.s.b[i];ON.sel=c&&isW(c)==(ON.color=='w')?i:-1;od()}
+const rlink=()=>location.origin+location.pathname+'?room='+ON.id;
+function cpl(){navigator.clipboard?navigator.clipboard.writeText(rlink()).then(()=>toast('Ссылка скопирована')):prompt('Скопируйте ссылку',rlink())}
+function shl(){navigator.share({title:'Партия в шахматы',text:'Сыграем в шахматы?',url:rlink()}).catch(()=>{})}
+function nres(){if(ON&&ON.v&&ON.v.status=='play'&&confirm('Сдаться?'))J('/api/room/'+ON.id+'/resign',{pid:PID})}
+function nleave(q){if(ON&&ON.es)ON.es.close();ON=null;if(!q){$('nl').hidden=false;$('np').hidden=true;history.replaceState(null,'',location.pathname)}}
+theme();hdr();
+</script></body></html>
